@@ -1,3 +1,5 @@
+#gravity version 1.1
+
 import math
 import pygame
 import numpy as np
@@ -156,7 +158,7 @@ while juego_en_curso:
             posx = evento.pos[0]
             columna = int(math.floor(posx / TAMANO))
 
-            if evento.button == 1:  # Click izquierdo para colocar ficha
+            if evento.button == 1:  # Click izquierdo para soltar ficha
                 if es_ubicacion_valida(tablero, columna):
                     fila = obtener_siguiente_fila_libre(tablero, columna)
                     colocar_ficha(tablero, fila, columna, turno+1)
