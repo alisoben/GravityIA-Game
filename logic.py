@@ -1,7 +1,7 @@
 # logic.py
 import numpy as np
-from config import COLUMNAS, FILAS
-from interface import pantalla, fuente, AZUL, AMARILLO, BLANCO, dibujar_tablero
+from config import *
+from interface import *
 import pygame
 import sys
 
@@ -65,8 +65,16 @@ def juego_terminado(mensaje):
     label = fuente.render(mensaje, True, color)
     pantalla.blit(label, (40, 10))
     pygame.display.update()
-    pygame.time.wait(4000)
-    sys.exit()
+    
+    end_time = pygame.time.get_ticks() + 4000
+    while pygame.time.get_ticks() < end_time:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+    return "MENU"
+    
 
 def es_ubicacion_valida(tablero, col):
     return tablero[FILAS-1][col] == 0
