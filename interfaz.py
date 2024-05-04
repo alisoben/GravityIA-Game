@@ -1,9 +1,9 @@
-# interface.py
-
 import pygame
 import sys
 import numpy as np
 from config import *
+from tablero import *
+from jugador import *
 
 pygame.init()
 ancho = (COLUMNAS * TAMANO) + MARGEN_DER
@@ -13,7 +13,12 @@ pygame.display.set_caption("Gravity Game")
 fuente = pygame.font.SysFont("monospace", 75)
 fuente2 = pygame.font.SysFont("monospace", 30)
 
-def dibujar_tablero(tablero, turno):
+def dibujar_escenario(tablero, jugadorX,jugadorO,turno):
+    posicion=tablero.getPosiciones()
+    cx=jugadorX.getC()
+    cex=jugadorX.getCE()
+    co=jugadorO.getC()
+    ceo=jugadorO.getCE()
     pantalla.fill(NEGRO)
     for c in range(COLUMNAS):
         for r in range(FILAS):
@@ -21,20 +26,53 @@ def dibujar_tablero(tablero, turno):
             pygame.draw.circle(pantalla, NEGRO, (int(c * TAMANO + TAMANO / 2), int(r * TAMANO + MARGEN_SUP + TAMANO / 2)), RADIO)
     for c in range(COLUMNAS):
         for r in range(FILAS):
-            if tablero[r][c] == 1:
+            if posicion[r][c] == 1:
                 pygame.draw.circle(pantalla, AZUL, (int(c * TAMANO + TAMANO / 2), alto - int(r * TAMANO + TAMANO / 2)), RADIO)
-            elif tablero[r][c] == 2:
+            elif posicion[r][c] == 2:
                 pygame.draw.circle(pantalla, AMARILLO, (int(c * TAMANO + TAMANO / 2), alto - int(r * TAMANO + TAMANO / 2)), RADIO)
-    
-    turno = 1 - turno
-    ficha = turno + 1
-    label = fuente2.render("Turno", True, BLANCO)
-    pantalla.blit(label, (COLUMNAS * TAMANO, 10))
-    pygame.draw.circle(pantalla, AZUL if ficha == 1 else AMARILLO, ((COLUMNAS * TAMANO) + 120,25), 20)
-    
+    pygame.display.update()
+
+    label1 = fuente2.render("Turno", True, BLANCO)
+    pantalla.blit(label1, (COLUMNAS * TAMANO, 10))
+    pygame.draw.circle(pantalla, AZUL if turno == 'x' else AMARILLO, ((COLUMNAS * TAMANO) + 120, 25), 20)
+
+    if cex < 4:
+        label2 = fuente2.render("Borrados usados: " + str(cex), True, AZUL)
+    else:
+        label2 = fuente2.render("Borrados agotados", True, AZUL)
+    label3 = fuente2.render("Turnos para borrar: " + str(cx), True, AZUL)
+    pantalla.blit(label2, (COLUMNAS * TAMANO, 100))
+    pantalla.blit(label3, (COLUMNAS * TAMANO, 200))
+
+    if ceo < 4:
+        label4 = fuente2.render("Borrados usados: " + str(ceo), True, AMARILLO)
+    else:
+        label4 = fuente2.render("Borrados agotados", True, AMARILLO)
+    label5 = fuente2.render("Turnos para borrar: " + str(co), True, AMARILLO)
+    pantalla.blit(label4, (COLUMNAS * TAMANO, 500))
+    pantalla.blit(label5, (COLUMNAS * TAMANO, 600))
+
+    pygame.display.update()
+
+def juego_terminado(mensaje):
+    if "1" in mensaje:
+        color=AZUL
+    elif "2" in mensaje:
+        color=AMARILLO
+    else:
+        color=BLANCO
+    label = fuente.render(mensaje, True, color)
+    pantalla.blit(label, (40, 10))
     pygame.display.update()
     
-    
+    end_time = pygame.time.get_ticks() + 4000
+    while pygame.time.get_ticks() < end_time:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+
 def dibujar_inicio(pantalla):
     fuente = pygame.font.Font(None, 36)
     boton_hvh = pygame.Rect(100, 150, 250, 50)
@@ -88,7 +126,7 @@ def dibujar_inicio(pantalla):
                 elif boton_salir.collidepoint(evento.pos):
                     pygame.quit()
                     sys.exit()
-
+                    
         pygame.draw.rect(pantalla, (130, 0, 80), boton_hvh)
         pygame.draw.rect(pantalla, (130, 0, 80), boton_hvia)
         pygame.draw.rect(pantalla, (130, 0, 80), boton_salir)
