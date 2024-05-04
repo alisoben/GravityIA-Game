@@ -1,6 +1,5 @@
 import pygame
 import sys
-import numpy as np
 from config import *
 from tablero import *
 from jugador import *

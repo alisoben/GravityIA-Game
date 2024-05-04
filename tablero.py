@@ -72,3 +72,26 @@ class Tablero:
 
     def getPosiciones(self):
         return self.tablero
+    
+    def contarFichas(self,ficha):
+        return np.count_nonzero(self.tablero==ficha)
+    
+    def contar_linea_3(self,ficha):
+        contador=0
+        for c in range(self.columnas - 2):
+            for r in range(self.filas):
+                if all(self.tablero[r][c + i] == ficha for i in range(3)):
+                    contador+=1
+        for c in range(self.columnas):
+            for r in range(self.filas - 2):
+                if all(self.tablero[r + i][c] == ficha for i in range(3)):
+                    contador+=1
+        for c in range(self.columnas - 2):
+            for r in range(self.filas - 2):
+                if all(self.tablero[r + i][c + i] == ficha for i in range(3)):
+                    contador+=1
+        for c in range(self.columnas - 3):
+            for r in range(2, self.filas):
+                if all(self.tablero[r - i][c + i] == ficha for i in range(3)):
+                    contador+=1
+        return contador
