@@ -43,7 +43,7 @@ def comprobar_victoria(tablero, ficha):
                 return True
     return False
 
-def comprobar_resultado(tablero):
+def comprobar_resultado(tablero, vs_ia=False):
     jugador1 = comprobar_victoria(tablero,1)
     jugador2 = comprobar_victoria(tablero,2)
     if jugador1 and jugador2:
@@ -51,7 +51,7 @@ def comprobar_resultado(tablero):
     elif jugador1:
         return "Jugador 1 gana!"
     elif jugador2:
-        return "Jugador 2 gana!"
+        return "La IA gana!" if vs_ia else "Jugador 2 gana!"
     else:
         return "Continua"
 
