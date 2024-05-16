@@ -7,28 +7,28 @@ from busquedaNoDeterministica import *
 class JugadorIA(Jugador):
     def __init__(self, ficha):
         super().__init__(ficha)
-
-    def realizarMovimiento(self, opcion_elegida):
-        if opcion_elegida[0] == "rotar_tablero":
-            self.rotar_tablero(opcion_elegida[1])
-        elif opcion_elegida[0] == "colocar_ficha":
-            self.colocar_ficha(opcion_elegida[1], opcion_elegida[2])
-        elif opcion_elegida[0] == "borrar_columna":
-            self.borrar_columna(opcion_elegida[1], opcion_elegida[2])
-        
+    
     def decidirPrincipiante(self, tablero):
         busqueda = BusquedaNoDeterministica()
         opcion_elegida = busqueda.noDeterminista(tablero, self)
         self.realizarMovimiento(opcion_elegida)
 
-
     def decidirAvanzado(self, tablero, turno, jugadorX):
         busqueda = BusquedaMinMax(4)
-        estado_inicial=Estado(tablero, turno, jugadorX, self)
+        tableroC, jugadorXC, jugadorOC = copy.deepcopy(tablero), copy.deepcopy(jugadorX), copy.deepcopy(self)
+        estado_inicial=Estado(tableroC, turno, jugadorXC,jugadorOC )
         valor_optimo,accion_optima = busqueda.minimax(estado_inicial, True, 0)
-        self.realizarMovimiento(accion_optima)
+        print(f"Valor óptimo encontrado: {valor_optimo}")
+        print(f"Acción óptima a tomar: {accion_optima}")
+        self.realizarMovimiento(tablero, accion_optima)
 
-    
+    def realizarMovimiento(self, tablero, opcion_elegida):
+        if opcion_elegida[0] == "rotar_tablero":
+            self.rotar_tablero(tablero)
+        elif opcion_elegida[0] == "colocar_ficha":
+            self.colocar_ficha(tablero, opcion_elegida[2])
+        elif opcion_elegida[0] == "borrar_columna":
+            self.borrar_columna(tablero, opcion_elegida[2])
 
 class Estado:
     def __init__(self, tablero: Tablero, turno, jugadorX: Jugador, jugadorO: JugadorIA):
@@ -73,11 +73,13 @@ class Estado:
         return self.tablero.comprobar_resultado()!='Continua'
     
     def evaluar(self):
-        # Diferencia de fichas
-        f1=self.tablero.contarFichas(2)-self.tablero.contarFichas(1)
-        #Cantidad de lineas de 3
-        f2=self.tablero.contar_linea_3(2)-self.tablero.contar_linea_3(1)
-        return (f1*8)+(f2*12)
+        #fichas al medio tienen mas probabilidades de formar 4
+        #mas fichas mas probabilidad de ganar
+        #
+        
+        
+        
+        
 
 
 

@@ -23,7 +23,7 @@ while True:
             #resultado = jugar_humano_ia("normal")
             pass
         elif modo_juego == "HUMANO_IA_EXPERTO":
-            jugar_humano_maquina3()
+            resultado = jugar_humano_maquina3()
             pass
 
         # Se podría implementar un menú final o una pantalla de resultados antes de romper el bucle o reiniciar

@@ -95,3 +95,4 @@ class Tablero:
                 if all(self.tablero[r - i][c + i] == ficha for i in range(3)):
                     contador+=1
         return contador
+    
