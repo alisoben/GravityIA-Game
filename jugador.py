@@ -1,8 +1,8 @@
 import numpy as np
 class Jugador:
     def __init__(self,ficha):
-        self.c=4 #turnos hasta poder borrar
-        self.ce=0 #borrados usados
+        self.c=4  #turnos hasta poder borrar
+        self.ce=0  #borrados usados
         self.ficha=ficha
     
     def jugar(self):
