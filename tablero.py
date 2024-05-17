@@ -1,4 +1,5 @@
 import numpy as np
+
 class Tablero:
     def __init__(self, filas, columnas):
         self.filas = filas
@@ -93,5 +94,24 @@ class Tablero:
             for r in range(2, self.filas):
                 if all(self.tablero[r - i][c + i] == ficha for i in range(3)):
                     contador+=1
+        return contador
+    def contar_linea_2(self, ficha):
+        contador = 0
+        for c in range(self.columnas - 1):
+            for r in range(self.filas):
+                if self.tablero[r][c] == ficha and self.tablero[r][c + 1] == ficha:
+                    contador += 1
+        for c in range(self.columnas):
+            for r in range(self.filas - 1):
+                if self.tablero[r][c] == ficha and self.tablero[r + 1][c] == ficha:
+                    contador += 1
+        for c in range(self.columnas - 1):
+            for r in range(self.filas - 1):
+                if self.tablero[r][c] == ficha and self.tablero[r + 1][c + 1] == ficha:
+                    contador += 1
+        for c in range(self.columnas - 1):
+            for r in range(1, self.filas):
+                if self.tablero[r][c] == ficha and self.tablero[r - 1][c + 1] == ficha:
+                    contador += 1
         return contador
     

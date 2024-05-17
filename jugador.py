@@ -4,6 +4,7 @@ class Jugador:
         self.c=4  #turnos hasta poder borrar
         self.ce=0  #borrados usados
         self.ficha=ficha
+        self.movimientos_realizados = 0
     
     def jugar(self):
         if self.c>0:
