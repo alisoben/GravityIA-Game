@@ -20,7 +20,7 @@ while True:
             resultado = jugar_humano_maquina()
             pass
         elif modo_juego == "HUMANO_IA_NORMAL":
-            #resultado = jugar_humano_ia("normal")
+            resultado = jugar_humano_normal();
             pass
         elif modo_juego == "HUMANO_IA_EXPERTO":
             resultado = jugar_humano_maquina3()

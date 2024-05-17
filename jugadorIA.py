@@ -3,6 +3,7 @@ from jugador import *
 from tablero import *
 from busquedaMinMax import *
 from busquedaNoDeterministica import *
+from busquedaGloton import *
 
 class JugadorIA(Jugador):
     def __init__(self, ficha):
@@ -12,6 +13,15 @@ class JugadorIA(Jugador):
         busqueda = BusquedaNoDeterministica()
         opcion_elegida = busqueda.noDeterminista(tablero, self)
         self.realizarMovimiento(opcion_elegida)
+
+    def decidirNormal(self, tablero, turno, jugadorX):
+        busqueda = CriterioGloton(tablero)
+        tableroC, jugadorXC, jugadorOC = copy.deepcopy(tablero), copy.deepcopy(jugadorX), copy.deepcopy(self)
+        estado_inicial=Estado(tableroC, turno, jugadorXC,jugadorOC )
+        valor_optimo,accion_optima = busqueda.gloton(estado_inicial)
+        print(f"Valor óptimo encontrado: {valor_optimo}")
+        print(f"Acción óptima a tomar: {accion_optima}")
+        self.realizarMovimiento(tablero, accion_optima)
 
     def decidirAvanzado(self, tablero, turno, jugadorX):
         busqueda = BusquedaMinMax(4)
@@ -72,16 +82,25 @@ class Estado:
     def terminal(self):
         return self.tablero.comprobar_resultado()!='Continua'
     
-    def evaluar(self):
+    #def evaluar(self):
         #fichas al medio tienen mas probabilidades de formar 4
         #mas fichas mas probabilidad de ganar
-        #
-        
-        
-        
-        
 
-
-
-
-    
+    def evaluarGloton(self, estado):
+        #Colocar ficha donde hay otra ficha del mismo color para formar una linea
+        valor = 0
+        for c in range(self.tablero.columnas - 3):
+            for r in range(3, self.tablero.filas):
+                # Verificar fichas en diagonal hacia abajo y hacia la derecha
+                if all(self.tablero.tablero[r - i][c + i] == estado for i in range(1)):
+                    valor += 1
+                # Verificar fichas en la posición arriba
+                if r > 0 and self.tablero.tablero[r - 1][c] == estado:
+                    valor += 1
+                # Verificar fichas en la posición a la derecha
+                if c < self.tablero.columnas - 1 and self.tablero.tablero[r][c + 1] == estado:
+                    valor += 1
+                # Verificar fichas en diagonal hacia arriba y hacia la derecha
+                if r > 0 and c < self.tablero.columnas - 1 and self.tablero.tablero[r - 1][c + 1] == estado:
+                    valor += 1
+        return valor
