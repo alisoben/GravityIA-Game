@@ -143,39 +143,60 @@ class Estado:
     
     
     def evaluarGloton(self):
-        return self.calcular_valor(self.turno) - self.calcular_valor('o' if self.turno == 'x' else 'x')
+        ficha_IA = self.jugadorO.ficha
+        ficha_oponente = self.jugadorX.ficha
 
-    def calcular_valor(self, ficha):
-        valor = 0
-        peso_cuatro = 100
-        peso_tres = 10
-        peso_dos = 1
+        puntaje_final = 0
 
-        for r in range(self.tablero.filas):
-            for c in range(self.tablero.columnas):
-                if self.tablero.tablero[r][c] == ficha:
-                    if c <= self.tablero.columnas - 4:
-                        line = self.tablero.tablero[r][c:c + 4]
-                        valor += self.evaluar_linea_normal(line, ficha, peso_cuatro, peso_tres, peso_dos)
-                    if r <= self.tablero.filas - 4:
-                        line = [self.tablero.tablero[r + i][c] for i in range(4)]
-                        valor += self.evaluar_linea_normal(line, ficha, peso_cuatro, peso_tres, peso_dos)
-                    if r <= self.tablero.filas - 4 and c <= self.tablero.columnas - 4:
-                        line = [self.tablero.tablero[r + i][c + i] for i in range(4)]
-                        valor += self.evaluar_linea_normal(line, ficha, peso_cuatro, peso_tres, peso_dos)
-                    if r >= 3 and c <= self.tablero.columnas - 4:
-                        line = [self.tablero.tablero[r - i][c + i] for i in range(4)]
-                        valor += self.evaluar_linea_normal(line, ficha, peso_cuatro, peso_tres, peso_dos)
-        return valor
-
-    def evaluar_linea_normal(self, linea, ficha, peso_cuatro, peso_tres, peso_dos):
-        count_ficha = linea.count(ficha)
-        count_vacio = linea.count('-')
-
-        if count_ficha == 4:
-            return peso_cuatro
-        elif count_ficha == 3 and count_vacio == 1:
-            return peso_tres
-        elif count_ficha == 2 and count_vacio == 2:
-            return peso_dos
+        if self.tablero.comprobar_victoria(ficha_IA):
+            return float('inf')
+        if self.tablero.comprobar_victoria(ficha_oponente):
+            return -float('inf')
+        
+        # Líneas horizontales
+        for fila in range(self.tablero.filas):
+            for col in range(self.tablero.columnas - 3):
+                linea = [self.tablero.tablero[fila][col + i] for i in range(4)]
+                puntaje_final += self.contar_linea_normal(linea)
+        
+        # Líneas verticales
+        for col in range(self.tablero.columnas):
+            for fila in range(self.tablero.filas - 3):
+                linea = [self.tablero.tablero[fila + i][col] for i in range(4)]
+                puntaje_final += self.contar_linea_normal(linea)
+        
+        # Líneas diagonales (de izquierda a derecha)
+        for fila in range(self.tablero.filas - 3):
+            for col in range(self.tablero.columnas - 3):
+                linea = [self.tablero.tablero[fila + i][col + i] for i in range(4)]
+                puntaje_final += self.contar_linea_normal(linea)
+        
+        # Líneas diagonales (de derecha a izquierda)
+        for fila in range(self.tablero.filas - 3):
+            for col in range(3, self.tablero.columnas):
+                linea = [self.tablero.tablero[fila + i][col - i] for i in range(4)]
+                puntaje_final += self.contar_linea_normal(linea)
+        
+        return puntaje_final
+    
+    def contar_linea_normal(self, linea):
+        if not (1 in linea and 2 in linea):
+            if not 1 in linea and not 2 in linea:
+                return 0
+            if 1 in linea and 2 not in linea:
+                cantidad = len([x for x in linea if x != 0])
+                if cantidad == 1:
+                    return -1
+                elif cantidad == 2:
+                    return -5
+                elif cantidad == 3:
+                    return -50
+            if 2 in linea and 1 not in linea:
+                cantidad = len([x for x in linea if x != 0])
+                if cantidad == 1:
+                    return 1
+                elif cantidad == 2:
+                    return 5
+                elif cantidad == 3:
+                    return 50
         return 0
