@@ -14,6 +14,7 @@ class Tablero:
         for r in range(self.filas):
             if self.tablero[r][col] == 0:
                 return r
+        return None  # No hay filas libres en la columna
     
     def rotar_tablero(self):
         self.tablero = np.flipud(np.fliplr(self.tablero))
