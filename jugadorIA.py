@@ -109,7 +109,6 @@ class Estado:
         peso_tres = 100
         peso_dos = 10
         peso_uno = 1
-
         puntaje_final = 0
 
         # Evaluar jugadas inmediatas para ganar o bloquear
@@ -172,7 +171,7 @@ class Estado:
             puntaje -= peso_uno
 
         return puntaje
-            
+    
     
     
     def evaluarGloton(self, estado):
