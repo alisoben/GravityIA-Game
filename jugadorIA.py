@@ -6,16 +6,18 @@ from config import *
 from busquedaMinMax import *
 from busquedaNoDeterministica import *
 from busquedaGloton import *
-import random
+
 
 class JugadorIA(Jugador):
     def __init__(self, ficha):
         super().__init__(ficha)
-    
-    def decidirPrincipiante(self, tablero):
+
+    def decidirPrincipiante(self, tablero,turno,jugadorX):
         busqueda = BusquedaNoDeterministica()
-        opcion_elegida = busqueda.noDeterminista(tablero, self)
-        self.realizarMovimiento(tablero, opcion_elegida)
+        tableroC, jugadorXC, jugadorOC = copy.deepcopy(tablero), copy.deepcopy(jugadorX), copy.deepcopy(self)
+        estado_inicial=Estado(tableroC, turno, jugadorXC,jugadorOC)
+        accion_azar = busqueda.noDeterminista(estado_inicial)
+        self.realizarMovimiento(tablero,accion_azar)
 
     def decidirNormal(self, tablero, turno, jugadorX):
         busqueda = CriterioGloton(tablero)
@@ -26,7 +28,7 @@ class JugadorIA(Jugador):
         self.realizarMovimiento(tablero, accion_optima)
 
     def decidirAvanzado(self, tablero, turno, jugadorX):
-        busqueda = BusquedaMinMax(2) #mejor es 3
+        busqueda = BusquedaMinMax(3)
         tableroC, jugadorXC, jugadorOC = copy.deepcopy(tablero), copy.deepcopy(jugadorX), copy.deepcopy(self)
         estado_inicial=Estado(tableroC, turno, jugadorXC,jugadorOC )
         valor_optimo,accion_optima = busqueda.minimax(estado_inicial, True, 0)
@@ -87,7 +89,6 @@ class Estado:
     def evaluar(self):
         ficha_IA = self.jugadorO.ficha
         ficha_oponente = self.jugadorX.ficha
-
         puntaje_final = 0
 
         if self.tablero.comprobar_victoria(ficha_IA):
@@ -139,8 +140,6 @@ class Estado:
                 elif cantidad==3:
                     return 50
         return 0
-    
-    
     
     def evaluarGloton(self):
         ficha_IA = self.jugadorO.ficha

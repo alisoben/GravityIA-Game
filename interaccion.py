@@ -40,11 +40,6 @@ def jugar_humano_humano():
                             jugadorO.colocar_ficha(tablero,columna)
                             turno = 'x'
                         dibujar_escenario(tablero,jugadorX,jugadorO,turno)
-                        resultado=tablero.comprobar_resultado()
-                        if resultado != "Continua":  # Revisar si el jugador actual ha ganado después de girar
-                            juego_en_curso = False
-                            juego_terminado(resultado)
-
                 elif evento.button == 3:  # Click derecho para borrar columna
                     if turno == 'x' and jugadorX.borrarPosible():
                         jugadorX.borrar_columna(tablero,columna)
@@ -63,10 +58,12 @@ def jugar_humano_humano():
                         jugadorO.rotar_tablero(tablero)
                         turno = 'x'
                     dibujar_escenario(tablero,jugadorX,jugadorO,turno)
-                    resultado=tablero.comprobar_resultado()
-                    if resultado != "Continua":  # Revisar si el jugador actual ha ganado después de girar
-                        juego_en_curso = False
-                        juego_terminado(resultado)
+            
+            resultado=tablero.comprobar_resultado()
+            if resultado != "Continua":  # Revisar si el jugador actual ha ganado después de girar
+                juego_en_curso = False
+                juego_terminado(resultado)
+
     return "MENU"
 
 def jugar_humano_maquina():
@@ -119,7 +116,7 @@ def jugar_humano_maquina():
                                 juego_en_curso = False
                                 juego_terminado(resultado)
             else:
-                jugadorO.decidirPrincipiante(tablero)
+                jugadorO.decidirPrincipiante(tablero, turno, jugadorX)
                 turno = 'x'
                 dibujar_escenario(tablero,jugadorX,jugadorO,turno)
                 resultado=tablero.comprobar_resultado()
@@ -187,7 +184,6 @@ def jugar_humano_normal():
                     juego_terminado(resultado)
     return "MENU"
 
-
 def jugar_humano_maquina3():
     pygame.init()
     pantalla = pygame.display.set_mode((COLUMNAS * TAMANO + MARGEN_DER, FILAS * TAMANO + MARGEN_SUP))
@@ -200,7 +196,7 @@ def jugar_humano_maquina3():
     juego_en_curso = True
     
     while juego_en_curso:
-        for evento in pygame.event.get():
+        for evento in pygame.event.get():            
             if evento.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -216,33 +212,26 @@ def jugar_humano_maquina3():
                         if tablero.es_ubicacion_valida(columna):
                             jugadorX.colocar_ficha(tablero,columna)
                             turno = 'o'
-                            dibujar_escenario(tablero,jugadorX,jugadorO,turno)
-                            resultado=tablero.comprobar_resultado()
-                            if resultado != "Continua":  # Revisar si el jugador actual ha ganado después de girar
-                                juego_en_curso = False
-                                juego_terminado(resultado)
 
                     elif evento.button == 3:  # Click derecho para borrar columna
                         if jugadorX.borrarPosible():
                             jugadorX.borrar_columna(tablero,columna)
                             turno = 'o'
-                            dibujar_escenario(tablero,jugadorX,jugadorO,turno)
+                    dibujar_escenario(tablero,jugadorX,jugadorO,turno)
 
-                    if evento.type == pygame.KEYDOWN:
-                        if evento.key == pygame.K_r:  # Presionar 'r' para rotar el tablero
-                            jugadorX.rotar_tablero(tablero)
-                            turno = 'o'
-                            dibujar_escenario(tablero,jugadorX,jugadorO,turno)
-                            resultado=tablero.comprobar_resultado()
-                            if resultado != "Continua":  # Revisar si el jugador actual ha ganado después de girar
-                                juego_en_curso = False
-                                juego_terminado(resultado)
+                if evento.type == pygame.KEYDOWN:
+                    if evento.key == pygame.K_r:  # Presionar 'r' para rotar el tablero
+                        jugadorX.rotar_tablero(tablero)
+                        turno = 'o'
+                        dibujar_escenario(tablero,jugadorX,jugadorO,turno)
+                        
             else:
                 jugadorO.decidirAvanzado(tablero, turno, jugadorX)
                 turno = 'x'
                 dibujar_escenario(tablero,jugadorX,jugadorO,turno)
-                resultado=tablero.comprobar_resultado()
-                if resultado != "Continua":  # Revisar si el jugador actual ha ganado después de girar
-                    juego_en_curso = False
-                    juego_terminado(resultado)
+            
+            resultado=tablero.comprobar_resultado()
+            if resultado != "Continua":  # Revisar si el jugador actual ha ganado después de girar
+                juego_en_curso = False
+                juego_terminado(resultado)
     return "MENU"
