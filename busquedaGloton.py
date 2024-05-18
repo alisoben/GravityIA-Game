@@ -8,7 +8,7 @@ class CriterioGloton:
 
         for accion in estado.acciones():
             siguiente_estado = estado.resultado(accion)
-            valor = estado.evaluarGloton(siguiente_estado)
+            valor = siguiente_estado.evaluarGloton()
 
             if valor > mejor_valor:
                 mejor_valor = valor
