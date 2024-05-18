@@ -4,13 +4,12 @@ class Jugador:
         self.c=4  #turnos hasta poder borrar
         self.ce=0  #borrados usados
         self.ficha=ficha
-        self.movimientos_realizados = 0
     
     def jugar(self):
         if self.c>0:
             self.c-=1
     
-    def borrar(self):
+    def borrar_rotar(self):
             self.ce+=1
             self.c=4
 
@@ -24,7 +23,7 @@ class Jugador:
         return self.ce
 
     def rotar_tablero(self,tablero):
-        self.jugar()
+        self.borrar_rotar()
         tablero.rotar_tablero()
 
     def colocar_ficha(self,tablero,col):
@@ -32,5 +31,5 @@ class Jugador:
         tablero.colocar_ficha(self.ficha,col)
     
     def borrar_columna(self,tablero,col):
-        self.borrar()
+        self.borrar_rotar()
         tablero.borrar_columna(col)

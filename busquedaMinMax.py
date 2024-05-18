@@ -8,11 +8,12 @@ class BusquedaMinMax:
         
         mejor_valor = float('-inf') if es_maximizador else float('inf')
         mejor_accion = None
-        
+        print('Valores posibles de MinMax:\n')
         for accion in estado.acciones():
             siguiente_estado = estado.resultado(accion)
             valor, _ = self.minimax(siguiente_estado, not es_maximizador, profundidad + 1)
-            
+            print("El valor es: ",valor)
+            print("La accion es: ",accion)
             if es_maximizador:
                 if valor > mejor_valor:
                     mejor_valor = valor
