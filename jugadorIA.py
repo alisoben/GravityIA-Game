@@ -9,9 +9,18 @@ from busquedaGloton import *
 
 
 class JugadorIA(Jugador):
-    def __init__(self, ficha):
+    def __init__(self, ficha,nivel):
         super().__init__(ficha)
+        self.nivel=nivel
 
+    def decidir(self, tablero, turno, jugadorX):
+        if self.nivel=='principiante':
+            self.decidirPrincipiante(tablero,turno,jugadorX)
+        elif self.nivel=='intermedio':
+            self.decidirNormal(tablero,turno,jugadorX)
+        else:
+            self.decidirAvanzado(tablero,turno,jugadorX)
+    
     def decidirPrincipiante(self, tablero,turno,jugadorX):
         busqueda = BusquedaNoDeterministica()
         tableroC, jugadorXC, jugadorOC = copy.deepcopy(tablero), copy.deepcopy(jugadorX), copy.deepcopy(self)
@@ -35,7 +44,7 @@ class JugadorIA(Jugador):
         print(f"Valor óptimo encontrado: {valor_optimo}")
         print(f"Acción óptima a tomar: {accion_optima}")
         self.realizarMovimiento(tablero, accion_optima)
-                
+    
     def realizarMovimiento(self, tablero, opcion_elegida):
         if opcion_elegida is None:
             return  # Si no hay una acción, no hacer nada
@@ -101,24 +110,26 @@ class Estado:
                 if col <= COLUMNAS - 4:
                     # Líneas horizontales
                     linea = self.tablero.tablero[fila][col:col+4]
-                    puntaje_final += self.contar_linea(linea)
+                    puntaje_final += self.calcular_puntaje_linea(linea)
                 if fila <= FILAS - 4:
                     # Líneas verticales
                     linea = [self.tablero.tablero[fila+i][col] for i in range(4)]
-                    puntaje_final += self.contar_linea(linea)
+                    puntaje_final += self.calcular_puntaje_linea(linea)
                 if col <= COLUMNAS - 4 and fila <= FILAS - 4:
                     # Líneas diagonales (de izquierda a derecha)
                     linea = [self.tablero.tablero[fila+i][col+i] for i in range(4)]
-                    puntaje_final += self.contar_linea(linea)
+                    puntaje_final += self.calcular_puntaje_linea(linea)
                 if col >= 3 and fila <= FILAS - 4:
                     # Líneas diagonales (de derecha a izquierda)
                     linea = [self.tablero.tablero[fila+i][col-i] for i in range(4)]
-                    puntaje_final += self.contar_linea(linea)
+                    puntaje_final += self.calcular_puntaje_linea(linea)
                     
+        puntaje_final +=2*(self.tablero.contarFichas(ficha_IA)-self.tablero.contarFichas(ficha_oponente))
+        
         return puntaje_final
 
 
-    def contar_linea(self,linea):
+    def calcular_puntaje_linea(self,linea):
         suma = sum(linea)
         if 1 in linea and not 2 in linea:
             if suma==1:

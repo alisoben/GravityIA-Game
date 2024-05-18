@@ -16,14 +16,13 @@ while True:
         if modo_juego == "HUMANO_HUMANO":
             resultado = jugar_humano_humano()
         elif modo_juego == "HUMANO_IA_PRINCIPIANTE":
-            #resultado = jugar_humano_ia("principiante")
-            resultado = jugar_humano_maquina()
+            resultado = jugar_humano_maquina('principiante')
             pass
         elif modo_juego == "HUMANO_IA_NORMAL":
-            resultado = jugar_humano_normal()
+            resultado = jugar_humano_maquina('intermedio')
             pass
         elif modo_juego == "HUMANO_IA_EXPERTO":
-            resultado = jugar_humano_maquina3()
+            resultado = jugar_humano_maquina('avanzado')
             pass
 
         # Se podría implementar un menú final o una pantalla de resultados antes de romper el bucle o reiniciar
