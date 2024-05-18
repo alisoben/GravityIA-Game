@@ -1,4 +1,5 @@
 import numpy as np
+from config import *
 
 class Tablero:
     def __init__(self, filas, columnas):
@@ -115,3 +116,8 @@ class Tablero:
                     contador += 1
         return contador
     
+    def obtener_fila_disponible(self, columna):
+        for fila in range(FILAS - 1, -1, -1):
+            if self.tablero[fila][columna] == 0:
+                return fila
+        return None  # Si la columna está llena
