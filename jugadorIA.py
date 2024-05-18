@@ -21,9 +21,8 @@ class JugadorIA(Jugador):
     def decidirNormal(self, tablero, turno, jugadorX):
         busqueda = CriterioGloton(tablero)
         tableroC, jugadorXC, jugadorOC = copy.deepcopy(tablero), copy.deepcopy(jugadorX), copy.deepcopy(self)
-        estado_inicial=Estado(tableroC, turno, jugadorXC,jugadorOC )
-        valor_optimo,accion_optima = busqueda.gloton(estado_inicial)
-        print(f"Valor óptimo encontrado: {valor_optimo}")
+        estado_inicial = Estado(tableroC, turno, jugadorXC, jugadorOC)
+        accion_optima = busqueda.gloton(estado_inicial)
         print(f"Acción óptima a tomar: {accion_optima}")
         self.realizarMovimiento(tablero, accion_optima)
 
@@ -175,21 +174,40 @@ class Estado:
             
     
     
-    def evaluarGloton(self, estado):
-        #Colocar ficha donde hay otra ficha del mismo color para formar una linea
+    def evaluarGloton(self):
+        return self.calcular_valor(self.turno) - self.calcular_valor('o' if self.turno == 'x' else 'x')
+
+    def calcular_valor(self, ficha):
         valor = 0
-        for c in range(self.tablero.columnas - 3):
-            for r in range(3, self.tablero.filas):
-                # Verificar fichas en diagonal hacia abajo y hacia la derecha
-                if all(self.tablero.tablero[r - i][c + i] == estado for i in range(1)):
-                    valor += 1
-                # Verificar fichas en la posición arriba
-                if r > 0 and self.tablero.tablero[r - 1][c] == estado:
-                    valor += 1
-                # Verificar fichas en la posición a la derecha
-                if c < self.tablero.columnas - 1 and self.tablero.tablero[r][c + 1] == estado:
-                    valor += 1
-                # Verificar fichas en diagonal hacia arriba y hacia la derecha
-                if r > 0 and c < self.tablero.columnas - 1 and self.tablero.tablero[r - 1][c + 1] == estado:
-                    valor += 1
+        peso_cuatro = 100
+        peso_tres = 10
+        peso_dos = 1
+
+        for r in range(self.tablero.filas):
+            for c in range(self.tablero.columnas):
+                if self.tablero.tablero[r][c] == ficha:
+                    if c <= self.tablero.columnas - 4:
+                        line = self.tablero.tablero[r][c:c + 4]
+                        valor += self.evaluar_linea_normal(line, ficha, peso_cuatro, peso_tres, peso_dos)
+                    if r <= self.tablero.filas - 4:
+                        line = [self.tablero.tablero[r + i][c] for i in range(4)]
+                        valor += self.evaluar_linea_normal(line, ficha, peso_cuatro, peso_tres, peso_dos)
+                    if r <= self.tablero.filas - 4 and c <= self.tablero.columnas - 4:
+                        line = [self.tablero.tablero[r + i][c + i] for i in range(4)]
+                        valor += self.evaluar_linea_normal(line, ficha, peso_cuatro, peso_tres, peso_dos)
+                    if r >= 3 and c <= self.tablero.columnas - 4:
+                        line = [self.tablero.tablero[r - i][c + i] for i in range(4)]
+                        valor += self.evaluar_linea_normal(line, ficha, peso_cuatro, peso_tres, peso_dos)
         return valor
+
+    def evaluar_linea_normal(self, linea, ficha, peso_cuatro, peso_tres, peso_dos):
+        count_ficha = linea.count(ficha)
+        count_vacio = linea.count('-')
+
+        if count_ficha == 4:
+            return peso_cuatro
+        elif count_ficha == 3 and count_vacio == 1:
+            return peso_tres
+        elif count_ficha == 2 and count_vacio == 2:
+            return peso_dos
+        return 0
