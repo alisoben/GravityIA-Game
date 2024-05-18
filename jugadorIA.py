@@ -28,7 +28,7 @@ class JugadorIA(Jugador):
         self.realizarMovimiento(tablero, accion_optima)
 
     def decidirAvanzado(self, tablero, turno, jugadorX):
-        busqueda = BusquedaMinMax(3)
+        busqueda = BusquedaMinMax(4)
         tableroC, jugadorXC, jugadorOC = copy.deepcopy(tablero), copy.deepcopy(jugadorX), copy.deepcopy(self)
         estado_inicial=Estado(tableroC, turno, jugadorXC,jugadorOC )
         valor_optimo,accion_optima = busqueda.minimax(estado_inicial, True, 0)
@@ -96,47 +96,43 @@ class Estado:
         if self.tablero.comprobar_victoria(ficha_oponente):
             return -float('inf')
         
-        # Líneas horizontales
         for fila in range(FILAS):
-            for col in range(COLUMNAS - 3):
-                linea = [self.tablero.tablero[fila][col + i] for i in range(4)]
-                puntaje_final+=self.contar_linea(linea)
-        # Líneas verticales
-        for col in range(COLUMNAS):
-            for fila in range(FILAS - 3):
-                linea = [self.tablero.tablero[fila + i][col] for i in range(4)]
-                puntaje_final+=self.contar_linea(linea)
-        # Líneas diagonales (de izquierda a derecha)
-        for fila in range(FILAS - 3):
-            for col in range(COLUMNAS - 3):
-                linea = [self.tablero.tablero[fila + i][col + i] for i in range(4)]
-                puntaje_final+=self.contar_linea(linea)
-        # Líneas diagonales (de derecha a izquierda)
-        for fila in range(FILAS - 3):
-            for col in range(3, COLUMNAS):
-                linea = [self.tablero.tablero[fila + i][col - i] for i in range(4)]
-                puntaje_final+=self.contar_linea(linea)
+            for col in range(COLUMNAS):
+                if col <= COLUMNAS - 4:
+                    # Líneas horizontales
+                    linea = self.tablero.tablero[fila][col:col+4]
+                    puntaje_final += self.contar_linea(linea)
+                if fila <= FILAS - 4:
+                    # Líneas verticales
+                    linea = [self.tablero.tablero[fila+i][col] for i in range(4)]
+                    puntaje_final += self.contar_linea(linea)
+                if col <= COLUMNAS - 4 and fila <= FILAS - 4:
+                    # Líneas diagonales (de izquierda a derecha)
+                    linea = [self.tablero.tablero[fila+i][col+i] for i in range(4)]
+                    puntaje_final += self.contar_linea(linea)
+                if col >= 3 and fila <= FILAS - 4:
+                    # Líneas diagonales (de derecha a izquierda)
+                    linea = [self.tablero.tablero[fila+i][col-i] for i in range(4)]
+                    puntaje_final += self.contar_linea(linea)
+                    
         return puntaje_final
 
 
     def contar_linea(self,linea):
-        if not (1 in linea and 2 in linea):
-            if not 1 in linea and not 2 in linea:
-                return 0
-            if 1 in linea and 2 not in linea:
-                cantidad=len([x for x in linea if x != 0])
-                if cantidad==1:
-                    return -1
-                elif cantidad==2:
-                    return -5
-                elif cantidad==3:
-                    return -50
-            if 2 in linea and 1 not in linea:
-                cantidad=len([x for x in linea if x != 0])
-                if cantidad==1:
-                    return 1
-                elif cantidad==2:
-                    return 5
-                elif cantidad==3:
-                    return 50
+        suma = sum(linea)
+        if 1 in linea and not 2 in linea:
+            if suma==1:
+                return -1
+            elif suma==2:
+                return -5
+            elif suma==3:
+                return -30
+        if 2 in linea and 1 not in linea:
+            suma=suma/2
+            if suma==1:
+                return 1
+            elif suma==2:
+                return 5
+            elif suma==3:
+                return 30
         return 0
