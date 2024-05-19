@@ -8,9 +8,25 @@ pygame.init()
 ancho = (COLUMNAS * TAMANO) + MARGEN_DER
 alto = FILAS * TAMANO + MARGEN_SUP
 pantalla = pygame.display.set_mode((ancho, alto))
+
+try:
+    fondo_imagen = pygame.image.load('fondo.jpeg').convert() 
+    fondo_rect = fondo_imagen.get_rect()
+    fondo_ratio = fondo_rect.width / fondo_rect.height
+    if ancho / alto > fondo_ratio:
+        nuevo_ancho = ancho
+        nuevo_alto = int(ancho / fondo_ratio)
+    else:
+        nuevo_ancho = int(alto * fondo_ratio)
+        nuevo_alto = alto
+    fondo_imagen = pygame.transform.scale(fondo_imagen, (nuevo_ancho, nuevo_alto))
+except FileNotFoundError:
+    print("Error al cargar la imagen de fondo")
+    sys.exit()
+     
 pygame.display.set_caption("Gravity Game")
-fuente = pygame.font.SysFont("monospace", 75)
-fuente2 = pygame.font.SysFont("monospace", 30)
+fuente = pygame.font.SysFont("monospace", 70)
+fuente2 = pygame.font.SysFont("monospace", 25, bold=True)
 
 def dibujar_escenario(tablero, jugadorX,jugadorO,turno):
     posicion=tablero.getPosiciones()
@@ -18,7 +34,7 @@ def dibujar_escenario(tablero, jugadorX,jugadorO,turno):
     cex=jugadorX.getCE()
     co=jugadorO.getC()
     ceo=jugadorO.getCE()
-    pantalla.fill(NEGRO)
+    pantalla.fill((0, 0, 0))
     for c in range(COLUMNAS):
         for r in range(FILAS):
             pygame.draw.rect(pantalla, GUINDA, (c * TAMANO, r * TAMANO + MARGEN_SUP, TAMANO, TAMANO))
@@ -36,18 +52,18 @@ def dibujar_escenario(tablero, jugadorX,jugadorO,turno):
     pygame.draw.circle(pantalla, AZUL if turno == 'x' else AMARILLO, ((COLUMNAS * TAMANO) + 120, 25), 20)
 
     if cex < 4:
-        label2 = fuente2.render("Borrados usados: " + str(cex), True, AZUL)
+        label2 = fuente2.render(" Borrados usados: " + str(cex), True, AZUL)
     else:
-        label2 = fuente2.render("Borrados agotados", True, AZUL)
-    label3 = fuente2.render("Turnos para borrar: " + str(cx), True, AZUL)
+        label2 = fuente2.render(" Borrados agotados", True, AZUL)
+    label3 = fuente2.render(" Turnos para borrar: " + str(cx), True, AZUL)
     pantalla.blit(label2, (COLUMNAS * TAMANO, 100))
     pantalla.blit(label3, (COLUMNAS * TAMANO, 200))
 
     if ceo < 4:
-        label4 = fuente2.render("Borrados usados: " + str(ceo), True, AMARILLO)
+        label4 = fuente2.render(" Borrados usados: " + str(ceo), True, AMARILLO)
     else:
-        label4 = fuente2.render("Borrados agotados", True, AMARILLO)
-    label5 = fuente2.render("Turnos para borrar: " + str(co), True, AMARILLO)
+        label4 = fuente2.render(" Borrados agotados", True, AMARILLO)
+    label5 = fuente2.render(" Turnos para borrar: " + str(co), True, AMARILLO)
     pantalla.blit(label4, (COLUMNAS * TAMANO, 500))
     pantalla.blit(label5, (COLUMNAS * TAMANO, 600))
 
@@ -74,17 +90,21 @@ def juego_terminado(mensaje):
 
 def dibujar_inicio(pantalla):
     fuente = pygame.font.Font(None, 36)
-    boton_hvh = pygame.Rect(100, 150, 250, 50)
-    boton_hvia = pygame.Rect(100, 250, 250, 50)
-    boton_salir = pygame.Rect(100, 350, 250, 50)
-    subboton_principiante = pygame.Rect(350, 150, 200, 50)
-    subboton_normal = pygame.Rect(350, 250, 200, 50)
-    subboton_experto = pygame.Rect(350, 350, 200, 50)
-    boton_regresar = pygame.Rect(350, 450, 200, 50)  # Botón para regresar al menú principal
+    ancho_ventana, alto_ventana = pantalla.get_size()
+    
+    boton_hvh = pygame.Rect((ancho_ventana - 250) // 2, 150, 280, 60)
+    boton_hvia = pygame.Rect((ancho_ventana - 250) // 2, 250, 280, 60)
+    boton_salir = pygame.Rect((ancho_ventana - 250) // 2, 350, 280, 60)
+    
+    subboton_principiante = pygame.Rect((ancho_ventana - 200) // 2, 150, 200, 50)
+    subboton_normal = pygame.Rect((ancho_ventana - 200) // 2, 250, 200, 50)
+    subboton_experto = pygame.Rect((ancho_ventana - 200) // 2, 350, 200, 50)
+    boton_regresar = pygame.Rect((ancho_ventana - 200) // 2, 450, 200, 50)
+    
     corriendo = True
 
     while corriendo:
-        pantalla.fill((0, 0, 0))
+        pantalla.blit(fondo_imagen, (0, 0))  # Dibuja la imagen de fondo
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
@@ -94,19 +114,11 @@ def dibujar_inicio(pantalla):
                     return "HUMANO_HUMANO"
                 elif boton_hvia.collidepoint(evento.pos):
                     while True:
-                        pantalla.fill((0, 0, 0))
-                        pygame.draw.rect(pantalla, (130, 0, 80), subboton_principiante)
-                        pygame.draw.rect(pantalla, (130, 0, 80), subboton_normal)
-                        pygame.draw.rect(pantalla, (130, 0, 80), subboton_experto)
-                        pygame.draw.rect(pantalla, (130, 0, 80), boton_regresar)
-                        texto_principiante = fuente.render("Principiante", True, (255, 255, 255))
-                        texto_normal = fuente.render("Normal", True, (255, 255, 255))
-                        texto_experto = fuente.render("Experto", True, (255, 255, 255))
-                        texto_regresar = fuente.render("Regresar", True, (255, 255, 255))
-                        pantalla.blit(texto_principiante, subboton_principiante.topleft)
-                        pantalla.blit(texto_normal, subboton_normal.topleft)
-                        pantalla.blit(texto_experto, subboton_experto.topleft)
-                        pantalla.blit(texto_regresar, boton_regresar.topleft)
+                        pantalla.blit(fondo_imagen, (0, 0)) 
+                        dibujar_boton(pantalla, subboton_principiante, "Principiante", fuente)
+                        dibujar_boton(pantalla, subboton_normal, "Normal", fuente)
+                        dibujar_boton(pantalla, subboton_experto, "Experto", fuente)
+                        dibujar_boton(pantalla, boton_regresar, "Regresar", fuente)
                         pygame.display.flip()
 
                         for sub_evento in pygame.event.get():
@@ -126,15 +138,14 @@ def dibujar_inicio(pantalla):
                     pygame.quit()
                     sys.exit()
                     
-        pygame.draw.rect(pantalla, (130, 0, 80), boton_hvh)
-        pygame.draw.rect(pantalla, (130, 0, 80), boton_hvia)
-        pygame.draw.rect(pantalla, (130, 0, 80), boton_salir)
-        texto_hvh = fuente.render("Humano vs Humano", True, (255, 255, 255))
-        texto_hvia = fuente.render("Humano vs IA", True, (255, 255, 255))
-        texto_salir = fuente.render("Salir", True, (255, 255, 255))
-        pantalla.blit(texto_hvh, boton_hvh.topleft)
-        pantalla.blit(texto_hvia, boton_hvia.topleft)
-        pantalla.blit(texto_salir, boton_salir.topleft)
+        dibujar_boton(pantalla, boton_hvh, "Humano vs Humano", fuente)
+        dibujar_boton(pantalla, boton_hvia, "Humano vs IA", fuente)
+        dibujar_boton(pantalla, boton_salir, "Salir", fuente)
         pygame.display.flip()
 
     return None
+
+def dibujar_boton(pantalla, rect, texto, fuente, color_boton=(130, 0, 80), color_texto=(255, 255, 255)):
+    pygame.draw.rect(pantalla, color_boton, rect, border_radius=10)
+    texto_renderizado = fuente.render(texto, True, color_texto)
+    pantalla.blit(texto_renderizado, texto_renderizado.get_rect(center=rect.center))

@@ -40,7 +40,7 @@ class JugadorIA(Jugador):
         busqueda = BusquedaMinMax(4)
         tableroC, jugadorXC, jugadorOC = copy.deepcopy(tablero), copy.deepcopy(jugadorX), copy.deepcopy(self)
         estado_inicial=Estado(tableroC, turno, jugadorXC,jugadorOC )
-        valor_optimo,accion_optima = busqueda.minimax(estado_inicial, True, 0)
+        valor_optimo,accion_optima = busqueda.minimax(estado_inicial, True, 0, float('-inf'), float('inf'))
         print(f"Valor óptimo encontrado: {valor_optimo}")
         print(f"Acción óptima a tomar: {accion_optima}")
         self.realizarMovimiento(tablero, accion_optima)
