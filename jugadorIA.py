@@ -128,8 +128,8 @@ class Estado:
                     linea = [self.tablero.tablero[fila+i][col-i] for i in range(4)]
                     puntaje_final += self.calcular_puntaje_linea(linea)
                     
-        puntaje_final +=2*(self.tablero.contarFichas(ficha_IA)-self.tablero.contarFichas(ficha_oponente))
-        
+        puntaje_final += 2 * (self.tablero.contarFichas(ficha_IA)-self.tablero.contarFichas(ficha_oponente))
+        puntaje_final -= 4 * (self.jugadorO.getCE()-self.jugadorX.getCE())
         return puntaje_final
 
 
@@ -141,7 +141,7 @@ class Estado:
             elif suma==2:
                 return -5
             elif suma==3:
-                return -30
+                return -15
         if 2 in linea and 1 not in linea:
             suma=suma/2
             if suma==1:
@@ -149,5 +149,5 @@ class Estado:
             elif suma==2:
                 return 5
             elif suma==3:
-                return 30
+                return 15
         return 0
