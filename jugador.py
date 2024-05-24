@@ -9,11 +9,11 @@ class Jugador:
         if self.c>0:
             self.c-=1
     
-    def borrar_rotar(self):
+    def jugar_mov_especial(self):
             self.ce+=1
             self.c=4
 
-    def borrarPosible(self):
+    def mov_especial_posible(self):
         return self.ce<4 and self.c==0
 
     def getC(self):
@@ -23,7 +23,7 @@ class Jugador:
         return self.ce
 
     def rotar_tablero(self,tablero):
-        self.borrar_rotar()
+        self.jugar_mov_especial()
         tablero.rotar_tablero()
 
     def colocar_ficha(self,tablero,col):
@@ -31,5 +31,5 @@ class Jugador:
         tablero.colocar_ficha(self.ficha,col)
     
     def borrar_columna(self,tablero,col):
-        self.borrar_rotar()
+        self.jugar_mov_especial()
         tablero.borrar_columna(col)

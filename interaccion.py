@@ -41,20 +41,20 @@ def jugar_humano_humano():
                             turno = 'x'
                         dibujar_escenario(tablero,jugadorX,jugadorO,turno)
                 elif evento.button == 3:  # Click derecho para borrar columna
-                    if turno == 'x' and jugadorX.borrarPosible():
+                    if turno == 'x' and jugadorX.mov_especial_posible():
                         jugadorX.borrar_columna(tablero,columna)
                         turno = 'o'
-                    elif turno == 'o' and jugadorO.borrarPosible():
+                    elif turno == 'o' and jugadorO.mov_especial_posible():
                         jugadorO.borrar_columna(tablero,columna)
                         turno = 'x'
                     dibujar_escenario(tablero,jugadorX,jugadorO,turno)
 
             if evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_r:  # Presionar 'r' para rotar el tablero
-                    if turno == 'x':
+                    if turno == 'x' and jugadorX.mov_especial_posible():
                         jugadorX.rotar_tablero(tablero)
                         turno = 'o'
-                    else:
+                    elif turno == 'o' and jugadorO.mov_especial_posible():
                         jugadorO.rotar_tablero(tablero)
                         turno = 'x'
                     dibujar_escenario(tablero,jugadorX,jugadorO,turno)
@@ -99,7 +99,7 @@ def jugar_humano_maquina(nivel):
                             break
 
                     elif evento.button == 3:  # Click derecho para borrar columna
-                        if jugadorX.borrarPosible():
+                        if jugadorX.mov_especial_posible():
                             jugadorX.borrar_columna(tablero,columna)
                             turno = 'o'
                             dibujar_escenario(tablero,jugadorX,jugadorO,turno)
@@ -107,10 +107,11 @@ def jugar_humano_maquina(nivel):
 
                 if evento.type == pygame.KEYDOWN:
                     if evento.key == pygame.K_r:  # Presionar 'r' para rotar el tablero
-                        jugadorX.rotar_tablero(tablero)
-                        turno = 'o'
-                        dibujar_escenario(tablero,jugadorX,jugadorO,turno)
-                        break
+                        if jugadorX.mov_especial_posible():
+                            jugadorX.rotar_tablero(tablero)
+                            turno = 'o'
+                            dibujar_escenario(tablero,jugadorX,jugadorO,turno)
+                            break
 
         else:
             jugadorO.decidir(tablero, turno, jugadorX)

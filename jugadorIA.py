@@ -69,12 +69,12 @@ class Estado:
                 acciones_posibles.append(("colocar_ficha", c))
         
         if self.turno == 'x':
-            if self.jugadorX.borrarPosible():
+            if self.jugadorX.mov_especial_posible():
                 for c in range(COLUMNAS):
                     acciones_posibles.append(("borrar_columna", c))
                 acciones_posibles.append("rotar_tablero")
         elif self.turno == 'o':
-            if self.jugadorO.borrarPosible():
+            if self.jugadorO.mov_especial_posible():
                 for c in range(COLUMNAS):
                     acciones_posibles.append(("borrar_columna", c))
                 acciones_posibles.append("rotar_tablero")
@@ -99,10 +99,14 @@ class Estado:
         ficha_IA = self.jugadorO.ficha
         ficha_oponente = self.jugadorX.ficha
         puntaje_final = 0
-
-        if self.tablero.comprobar_victoria(ficha_IA):
+        
+        gana_IA = self.tablero.comprobar_victoria(ficha_IA)
+        gana_j = self.tablero.comprobar_victoria(ficha_oponente)
+        if gana_IA and gana_j:
+            return 0
+        elif gana_IA:
             return float('inf')
-        if self.tablero.comprobar_victoria(ficha_oponente):
+        elif gana_j:
             return -float('inf')
         
         for fila in range(FILAS):

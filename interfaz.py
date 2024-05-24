@@ -52,18 +52,20 @@ def dibujar_escenario(tablero, jugadorX,jugadorO,turno):
     pygame.draw.circle(pantalla, AZUL if turno == 'x' else AMARILLO, ((COLUMNAS * TAMANO) + 120, 25), 20)
 
     if cex < 4:
-        label2 = fuente2.render(" Borrados usados: " + str(cex), True, AZUL)
+        label2 = fuente2.render(" Poderes usados: " + str(cex), True, AZUL)
+        label3 = fuente2.render(" Turnos para usar poder: " + str(cx), True, AZUL)
     else:
-        label2 = fuente2.render(" Borrados agotados", True, AZUL)
-    label3 = fuente2.render(" Turnos para borrar: " + str(cx), True, AZUL)
+        label2 = fuente2.render(" Poderes agotados", True, AZUL)
+        label3 = fuente2.render(" Piensa mejor las jugadas", True, BLANCO)
     pantalla.blit(label2, (COLUMNAS * TAMANO, 100))
     pantalla.blit(label3, (COLUMNAS * TAMANO, 200))
 
     if ceo < 4:
-        label4 = fuente2.render(" Borrados usados: " + str(ceo), True, AMARILLO)
+        label4 = fuente2.render(" Poderes usados: " + str(ceo), True, AMARILLO)
+        label5 = fuente2.render(" Turnos para usar poder: " + str(co), True, AMARILLO)
     else:
-        label4 = fuente2.render(" Borrados agotados", True, AMARILLO)
-    label5 = fuente2.render(" Turnos para borrar: " + str(co), True, AMARILLO)
+        label4 = fuente2.render(" Poderes agotados", True, AMARILLO)
+        label5 = fuente2.render(" Piensa mejor las jugadas", True, BLANCO)
     pantalla.blit(label4, (COLUMNAS * TAMANO, 500))
     pantalla.blit(label5, (COLUMNAS * TAMANO, 600))
 
@@ -80,7 +82,7 @@ def juego_terminado(mensaje):
     pantalla.blit(label, (40, 10))
     pygame.display.update()
     
-    end_time = pygame.time.get_ticks() + 4000
+    end_time = pygame.time.get_ticks() + 5000
     while pygame.time.get_ticks() < end_time:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
