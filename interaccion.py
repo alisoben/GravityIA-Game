@@ -60,7 +60,7 @@ def jugar_humano_humano():
                     dibujar_escenario(tablero,jugadorX,jugadorO,turno)
             
             resultado=tablero.comprobar_resultado()
-            if resultado != "Continua":  # Revisar si el jugador actual ha ganado después de girar
+            if resultado != "Continua":  
                 juego_en_curso = False
                 juego_terminado(resultado)
 
@@ -76,7 +76,7 @@ def jugar_humano_maquina(nivel):
     turno='x'
     dibujar_escenario(tablero,jugadorX,jugadorO,turno)
     juego_en_curso = True
-    clock = pygame.time.Clock()#ahora
+    clock = pygame.time.Clock()
     
     while juego_en_curso:
         if turno =='x':
@@ -122,7 +122,7 @@ def jugar_humano_maquina(nivel):
         pygame.display.update()
         clock.tick(30)
         resultado=tablero.comprobar_resultado()
-        if resultado != "Continua":  # Revisar si el jugador actual ha ganado después de girar
+        if resultado != "Continua":  
             juego_en_curso = False
             juego_terminado(resultado)
 

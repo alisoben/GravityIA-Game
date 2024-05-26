@@ -25,11 +25,11 @@ while True:
             resultado = jugar_humano_maquina('avanzado')
             pass
 
-        # Se podría implementar un menú final o una pantalla de resultados antes de romper el bucle o reiniciar
+    
         if resultado == "MENU":
             continue
         else:
-            break  # Sale del bucle si el resultado no requiere volver al menú
+            break  
 
 if __name__ == "__main__":
     main()

@@ -47,7 +47,7 @@ class JugadorIA(Jugador):
     
     def realizarMovimiento(self, tablero, opcion_elegida):
         if opcion_elegida is None:
-            return  # Si no hay una acción, no hacer nada
+            return  
         if opcion_elegida == "rotar_tablero":
             self.rotar_tablero(tablero)
         elif opcion_elegida[0] == "colocar_ficha":

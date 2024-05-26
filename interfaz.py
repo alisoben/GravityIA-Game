@@ -10,7 +10,7 @@ alto = FILAS * TAMANO + MARGEN_SUP
 pantalla = pygame.display.set_mode((ancho, alto))
 
 try:
-    fondo_imagen = pygame.image.load('fondo.jpeg').convert() 
+    fondo_imagen = pygame.image.load('fondo.jpeg').convert()
     fondo_rect = fondo_imagen.get_rect()
     fondo_ratio = fondo_rect.width / fondo_rect.height
     if ancho / alto > fondo_ratio:
@@ -20,6 +20,8 @@ try:
         nuevo_ancho = int(alto * fondo_ratio)
         nuevo_alto = alto
     fondo_imagen = pygame.transform.scale(fondo_imagen, (nuevo_ancho, nuevo_alto))
+    x_inicio = (ancho - nuevo_ancho) // 2
+    y_inicio = (alto - nuevo_alto) // 2
 except FileNotFoundError:
     print("Error al cargar la imagen de fondo")
     sys.exit()
@@ -37,37 +39,37 @@ def dibujar_escenario(tablero, jugadorX,jugadorO,turno):
     pantalla.fill((0, 0, 0))
     for c in range(COLUMNAS):
         for r in range(FILAS):
-            pygame.draw.rect(pantalla, GUINDA, (c * TAMANO, r * TAMANO + MARGEN_SUP, TAMANO, TAMANO))
-            pygame.draw.circle(pantalla, NEGRO, (int(c * TAMANO + TAMANO / 2), int(r * TAMANO + MARGEN_SUP + TAMANO / 2)), RADIO)
+            pygame.draw.rect(pantalla, GUINDA, (10+c * TAMANO, r * TAMANO + MARGEN_SUP, TAMANO, TAMANO))
+            pygame.draw.circle(pantalla, NEGRO, (int(10+c * TAMANO + TAMANO / 2), int(r * TAMANO + MARGEN_SUP + TAMANO / 2)), RADIO)
     for c in range(COLUMNAS):
         for r in range(FILAS):
             if posicion[r][c] == 1:
-                pygame.draw.circle(pantalla, AZUL, (int(c * TAMANO + TAMANO / 2), alto - int(r * TAMANO + TAMANO / 2)), RADIO)
+                pygame.draw.circle(pantalla, AZUL, (int(10+c * TAMANO + TAMANO / 2), alto - int(r * TAMANO + TAMANO / 2)), RADIO)
             elif posicion[r][c] == 2:
-                pygame.draw.circle(pantalla, AMARILLO, (int(c * TAMANO + TAMANO / 2), alto - int(r * TAMANO + TAMANO / 2)), RADIO)
+                pygame.draw.circle(pantalla, AMARILLO, (int(10+c * TAMANO + TAMANO / 2), alto - int(r * TAMANO + TAMANO / 2)), RADIO)
     pygame.display.update()
 
     label1 = fuente2.render("Turno", True, BLANCO)
-    pantalla.blit(label1, (COLUMNAS * TAMANO, 10))
-    pygame.draw.circle(pantalla, AZUL if turno == 'x' else AMARILLO, ((COLUMNAS * TAMANO) + 120, 25), 20)
-
-    if cex < 4:
-        label2 = fuente2.render(" Poderes usados: " + str(cex), True, AZUL)
-        label3 = fuente2.render(" Turnos para usar poder: " + str(cx), True, AZUL)
+    pantalla.blit(label1, (pantalla.get_width() // 2 - label1.get_width() // 2, 10))
+    pygame.draw.circle(pantalla, AZUL if turno == 'x' else AMARILLO, (pantalla.get_width() // 2, 50), 20)
+    
+    if ceo < 4:
+        label4 = fuente2.render("Poderes: " + str(ceo), True, AMARILLO)
+        label5 = fuente2.render("Turnos: " + str(co), True, AMARILLO)
     else:
-        label2 = fuente2.render(" Poderes agotados", True, AZUL)
-        label3 = fuente2.render(" Piensa mejor las jugadas", True, BLANCO)
-    pantalla.blit(label2, (COLUMNAS * TAMANO, 100))
-    pantalla.blit(label3, (COLUMNAS * TAMANO, 200))
+        label4 = fuente2.render("Poderes agotados", True, AMARILLO)
+        label5 = fuente2.render("Piensa mejor", True, AMARILLO)
+    pantalla.blit(label4, (10, 10))
+    pantalla.blit(label5, (10, 40))
 
     if ceo < 4:
-        label4 = fuente2.render(" Poderes usados: " + str(ceo), True, AMARILLO)
-        label5 = fuente2.render(" Turnos para usar poder: " + str(co), True, AMARILLO)
-    else:
-        label4 = fuente2.render(" Poderes agotados", True, AMARILLO)
-        label5 = fuente2.render(" Piensa mejor las jugadas", True, BLANCO)
-    pantalla.blit(label4, (COLUMNAS * TAMANO, 500))
-    pantalla.blit(label5, (COLUMNAS * TAMANO, 600))
+        label2 = fuente2.render("Poderes: " + str(cex), True, AZUL)
+        label3 = fuente2.render("Turnos: " + str(cx), True, AZUL)
+    else: 
+        label2 = fuente2.render("Poderes agotados", True, AZUL)
+        label3 = fuente2.render("Piensa mejor", True, AZUL)
+    pantalla.blit(label2, (pantalla.get_width() - label2.get_width() - 10, 10))
+    pantalla.blit(label3, (pantalla.get_width() - label3.get_width() - 10, 40))
 
     pygame.display.update()
 
@@ -79,7 +81,7 @@ def juego_terminado(mensaje):
     else:
         color=BLANCO
     label = fuente.render(mensaje, True, color)
-    pantalla.blit(label, (40, 10))
+    pantalla.blit(label, (40, 120))
     pygame.display.update()
     
     end_time = pygame.time.get_ticks() + 5000
@@ -106,7 +108,7 @@ def dibujar_inicio(pantalla):
     corriendo = True
 
     while corriendo:
-        pantalla.blit(fondo_imagen, (0, 0))  # Dibuja la imagen de fondo
+        pantalla.blit(fondo_imagen, (x_inicio, y_inicio)) 
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
@@ -116,7 +118,7 @@ def dibujar_inicio(pantalla):
                     return "HUMANO_HUMANO"
                 elif boton_hvia.collidepoint(evento.pos):
                     while True:
-                        pantalla.blit(fondo_imagen, (0, 0)) 
+                        pantalla.blit(fondo_imagen, (x_inicio, y_inicio)) 
                         dibujar_boton(pantalla, subboton_principiante, "Principiante", fuente)
                         dibujar_boton(pantalla, subboton_normal, "Normal", fuente)
                         dibujar_boton(pantalla, subboton_experto, "Experto", fuente)
@@ -135,7 +137,7 @@ def dibujar_inicio(pantalla):
                                 elif subboton_experto.collidepoint(sub_evento.pos):
                                     return "HUMANO_IA_EXPERTO"
                                 elif boton_regresar.collidepoint(sub_evento.pos):
-                                    return "REGRESAR" # Sale del bucle interno, regresa al menú principal
+                                    return "REGRESAR" 
                 elif boton_salir.collidepoint(evento.pos):
                     pygame.quit()
                     sys.exit()
